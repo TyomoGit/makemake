@@ -28,10 +28,6 @@ impl Material {
         format!("{}.c", self.name)
     }
 
-    pub fn h_name(&self) -> String {
-        format!("{}.h", self.name)
-    }
-
     pub fn dependencies_name(&self) -> String {
         let mut dependencies = String::new();
         for dependency in &self.dependencies {
