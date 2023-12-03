@@ -1,22 +1,30 @@
-use std::{env::args, fs, io::Error};
+use std::{env::args, fs, io::Error, process::{Command, exit}};
 
 use material::Material;
 
 mod material;
 mod scanner;
 
+const  BINARY_NAME: &str = "a.out";
+
 fn main() -> Result<(), Error> {
     let materials = collect_materials()?;
 
-    let binary_name = args().nth(1).unwrap_or("main.out".to_string());
     let all_objects = str_all_objects(&materials);
     let mut makefile = String::new();
 
-    makefile.push_str(&makefile_binary(&binary_name, &all_objects));
+    makefile.push_str(&makefile_binary(BINARY_NAME, &all_objects));
     makefile.push_str(&makefile_objects(&materials));
-    makefile.push_str(&makefile_utils(&binary_name));
+    makefile.push_str(&makefile_utils(BINARY_NAME));
 
     fs::write("Makefile", makefile)?;
+
+    if let Some(make_label) = args().nth(1) {
+        let code = execute_make(&make_label);
+        if code != 0 {
+            exit(code);
+        }
+    }
 
     Ok(())
 }
@@ -53,7 +61,7 @@ fn str_all_objects(materials: &[Material]) -> String {
 }
 
 fn makefile_binary(binary_name: &str, all_objects: &str) -> String {
-    format!("{}: {}\n\n", binary_name, all_objects)
+    format!("{0}: {1}\n\tgcc {1}-o {0}\n\n", binary_name, all_objects)
 }
 
 fn makefile_objects(materials: &[Material]) -> String {
@@ -75,4 +83,18 @@ fn makefile_utils(binary_name: &str) -> String {
     format!("run: {}\n\t./{}\n\nclean:\n\trm -f *.o *.out\n",
         binary_name, binary_name
     )
+}
+
+fn execute_make(label: &str) -> i32 {
+    let command = Command::new("make")
+        .arg(label)
+        .output()
+        .expect("failed to execute process");
+    if command.stderr.is_empty() {
+        print!("{}", String::from_utf8_lossy(&command.stdout));
+    } else {
+        print!("{}", String::from_utf8_lossy(&command.stderr));
+    }
+
+    command.status.code().unwrap()
 }

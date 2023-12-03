@@ -1,4 +1,5 @@
-main.out: main.o sub.o 
+a.out: main.o sub.o 
+	gcc main.o sub.o -o a.out
 
 main.o: main.c sub.h 
 	gcc -c main.c -o main.o
@@ -6,8 +7,8 @@ main.o: main.c sub.h
 sub.o: sub.c sub.h 
 	gcc -c sub.c -o sub.o
 
-run: main.out
-	./main.out
+run: a.out
+	./a.out
 
 clean:
 	rm -f *.o *.out
