@@ -1,5 +1,4 @@
 main.out: main.o sub.o 
-	gcc main.o sub.o  -o main.out
 
 main.o: main.c sub.h 
 	gcc -c main.c -o main.o
