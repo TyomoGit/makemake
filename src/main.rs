@@ -41,7 +41,7 @@ fn main() -> Result<(), Error> {
         makefile.push_str(&format!("\t{}\n\n", material.gcc_command()));
     }
 
-    makefile.push_str("run:\n");
+    makefile.push_str(&format!("run: {}\n", binary_name));
     makefile.push_str(&format!("\t./{}\n\n", binary_name));
 
     makefile.push_str("clean:\n");

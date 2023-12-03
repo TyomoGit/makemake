@@ -7,7 +7,7 @@ main.o: main.c sub.h
 sub.o: sub.c sub.h 
 	gcc -c sub.c -o sub.o
 
-run:
+run: main.out
 	./main.out
 
 clean:
