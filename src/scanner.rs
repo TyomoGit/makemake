@@ -8,8 +8,14 @@ use crate::material::Material;
 
 pub fn scan(path: &str) -> Result<Material, Error> {
     let mut dependencies = HashSet::new();
-    let name = path.replace(".c", "");
 
+    collect(&mut dependencies, path)?;
+
+    let name = path.replace(".c", "");
+    Ok(Material::new(name, dependencies))
+}
+
+fn collect(set: &mut HashSet<String>, path: &str) -> Result<(), Error> {
     let file = File::open(path)?;
     let reader = BufReader::new(file);
 
@@ -21,11 +27,12 @@ pub fn scan(path: &str) -> Result<Material, Error> {
             let mut dependency = iter.next().unwrap().to_string();
             dependency.remove(0);
             dependency.pop();
-            dependencies.insert(dependency);
+
+            collect(set, &dependency)?;
+            
+            set.insert(dependency);
         }
     }
 
-    // dbg!(name.clone(), dependencies.clone());
-
-    Ok(Material::new(name, dependencies))
+    Ok(())
 }
