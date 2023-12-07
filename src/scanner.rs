@@ -28,9 +28,13 @@ fn collect(set: &mut HashSet<String>, path: &str) -> Result<(), Error> {
             dependency.remove(0);
             dependency.pop();
 
+            if set.contains(&dependency) {
+                continue;
+            }
+
+            set.insert(dependency.clone());
+
             collect(set, &dependency)?;
-            
-            set.insert(dependency);
         }
     }
 

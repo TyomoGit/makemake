@@ -1,11 +1,16 @@
-use std::{env::args, fs, io::Error, process::{Command, exit}};
+use std::{
+    env::args,
+    fs,
+    io::Error,
+    process::{exit, Command},
+};
 
 use material::Material;
 
 mod material;
 mod scanner;
 
-const  BINARY_NAME: &str = "a.out";
+const BINARY_NAME: &str = "a.out";
 
 fn main() -> Result<(), Error> {
     let materials = collect_materials()?;
@@ -80,7 +85,8 @@ fn makefile_objects(materials: &[Material]) -> String {
 }
 
 fn makefile_utils(binary_name: &str) -> String {
-    format!("run: {}\n\t./{}\n\nclean:\n\trm -f *.o *.out\n",
+    format!(
+        "run: {}\n\t./{}\n\nclean:\n\trm -f *.o *.out\n",
         binary_name, binary_name
     )
 }
