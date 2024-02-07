@@ -37,6 +37,6 @@ impl Material {
     }
 
     pub fn gcc_command(&self) -> String {
-        format!("gcc -c {} -o {}", self.c_name(), self.object_name())
+        format!("$(CC) $(FLAGS) -c {} -o {}", self.c_name(), self.object_name())
     }
 }

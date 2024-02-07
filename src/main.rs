@@ -18,6 +18,18 @@ fn main() -> Result<(), Error> {
     let all_objects = str_all_objects(&materials);
     let mut makefile = String::new();
 
+    makefile.push_str(
+    "
+    FLAGS := -Wall -Werror -Wextra -Wno-unused-parameter
+    CC := gcc
+
+    ifeq ($(MODE), debug)
+        FLAGS+= -O0 -DDEBUG -g
+    else
+        FLAGS+= -O3 -flto
+        MODE := release
+    endif");
+
     makefile.push_str(&makefile_binary(BINARY_NAME, &all_objects));
     makefile.push_str(&makefile_objects(&materials));
     makefile.push_str(&makefile_utils(BINARY_NAME));
@@ -66,7 +78,7 @@ fn str_all_objects(materials: &[Material]) -> String {
 }
 
 fn makefile_binary(binary_name: &str, all_objects: &str) -> String {
-    format!("{0}: {1}\n\tgcc {1}-o {0}\n\n", binary_name, all_objects)
+    format!("{0}: {1}\n\t@ echo \"build in $(MODE) mode\"\n\t$(CC) $(FLAGS) {1} -o {0}\n\n", binary_name, all_objects)
 }
 
 fn makefile_objects(materials: &[Material]) -> String {
