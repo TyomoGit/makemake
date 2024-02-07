@@ -19,16 +19,15 @@ fn main() -> Result<(), Error> {
     let mut makefile = String::new();
 
     makefile.push_str(
-    "
-    FLAGS := -Wall -Werror -Wextra -Wno-unused-parameter
-    CC := gcc
+    "FLAGS := -Wall -Werror -Wextra -Wno-unused-parameter
+CC := gcc
 
-    ifeq ($(MODE), debug)
-        FLAGS+= -O0 -DDEBUG -g
-    else
-        FLAGS+= -O3 -flto
-        MODE := release
-    endif");
+ifeq ($(MODE), debug)
+\tFLAGS+= -O0 -DDEBUG -g
+else
+\tFLAGS+= -O3 -flto
+\tMODE := release
+endif\n");
 
     makefile.push_str(&makefile_binary(BINARY_NAME, &all_objects));
     makefile.push_str(&makefile_objects(&materials));
